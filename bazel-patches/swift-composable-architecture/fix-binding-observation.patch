@@ -1,0 +1,32 @@
+--- a/Sources/ComposableArchitecture/Observation/Binding+Observation.swift
++++ b/Sources/ComposableArchitecture/Observation/Binding+Observation.swift
+@@ -41,10 +41,10 @@
+   }
+ }
+
+-@available(iOS, introduced: 13, obsoleted: 17)
+-@available(macOS, introduced: 10.15, obsoleted: 14)
+-@available(tvOS, introduced: 13, obsoleted: 17)
+-@available(watchOS, introduced: 6, obsoleted: 10)
++@available(iOS, introduced: 13, deprecated: 17)
++@available(macOS, introduced: 10.15, deprecated: 14)
++@available(tvOS, introduced: 13, deprecated: 17)
++@available(watchOS, introduced: 6, deprecated: 10)
+ @available(visionOS, unavailable)
+ extension Perception.Bindable {
+   @_disfavoredOverload
+@@ -363,10 +363,10 @@
+   }
+ }
+
+-@available(iOS, introduced: 13, obsoleted: 17)
+-@available(macOS, introduced: 10.15, obsoleted: 14)
+-@available(tvOS, introduced: 13, obsoleted: 17)
+-@available(watchOS, introduced: 6, obsoleted: 10)
++@available(iOS, introduced: 13, deprecated: 17)
++@available(macOS, introduced: 10.15, deprecated: 14)
++@available(tvOS, introduced: 13, deprecated: 17)
++@available(watchOS, introduced: 6, deprecated: 10)
+ @available(visionOS, unavailable)
+ @dynamicMemberLookup
+ public struct _StoreBindable_Perception<State: ObservableState, Action, Value> {

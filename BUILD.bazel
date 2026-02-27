@@ -1,0 +1,121 @@
+load("@rules_apple//apple:apple.bzl", "local_provisioning_profile")
+load("@rules_apple//apple:ios.bzl", "ios_application")
+load("@rules_apple//apple:watchos.bzl", "watchos_application")
+load("@rules_swift//swift:swift.bzl", "swift_library")
+load("@rules_xcodeproj//xcodeproj:defs.bzl", "top_level_target", "xcode_provisioning_profile", "xcodeproj")
+load("//:build_defs.bzl", "SWIFT_COPTS")
+
+# ─── watchOS app ─────────────────────────────────────────────────────────────
+
+swift_library(
+    name = "WatchClawAppLib",
+    srcs = glob(
+        ["WatchClaw/**/*.swift"],
+        exclude = ["WatchClaw/Preview Content/**"],
+    ),
+    copts = SWIFT_COPTS,
+    module_name = "WatchClawApp",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@swiftpkg_swift_composable_architecture//:ComposableArchitecture",
+        "@swiftpkg_swift_dependencies//:Dependencies",
+        "@swiftpkg_swift_log//:Logging",
+    ],
+)
+
+local_provisioning_profile(
+    name = "watch_claw_local_profile",
+    profile_name = "watchOS Team Provisioning Profile: gannon.WatchClaw",
+    team_id = "L4K4Q74X62",
+)
+
+xcode_provisioning_profile(
+    name = "watch_claw_device_profile",
+    managed_by_xcode = True,
+    provisioning_profile = ":watch_claw_local_profile",
+)
+
+watchos_application(
+    name = "WatchClaw",
+    app_icons = glob(["WatchClaw/Assets/AppIcon.icon/**"]),
+    bundle_id = "gannon.WatchClaw",
+    infoplists = [
+        "WatchClaw/Info.plist",
+        "BazelInfo.plist",
+    ],
+    minimum_os_version = "26.0",
+    resources = glob(["WatchClaw/Assets/Assets.xcassets/**"]),
+    provisioning_profile = select({
+        "@apple_support//constraints:device": ":watch_claw_device_profile",
+        "//conditions:default": None,
+    }),
+    visibility = ["//visibility:public"],
+    deps = [":WatchClawAppLib"],
+)
+
+# ─── iOS companion app ───────────────────────────────────────────────────────
+
+swift_library(
+    name = "WatchClawPhoneAppLib",
+    srcs = glob(
+        ["WatchClawPhone/**/*.swift"],
+        exclude = ["WatchClawPhone/Preview Content/**"],
+    ),
+    copts = SWIFT_COPTS,
+    module_name = "WatchClawPhoneApp",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@swiftpkg_swift_composable_architecture//:ComposableArchitecture",
+    ],
+)
+
+local_provisioning_profile(
+    name = "watch_claw_phone_local_profile",
+    profile_name = "iOS Team Provisioning Profile: gannon.WatchClawPhone",
+    team_id = "L4K4Q74X62",
+)
+
+xcode_provisioning_profile(
+    name = "watch_claw_phone_device_profile",
+    managed_by_xcode = True,
+    provisioning_profile = ":watch_claw_phone_local_profile",
+)
+
+ios_application(
+    name = "WatchClawPhone",
+    app_icons = glob(["WatchClawPhone/Assets/AppIcon.icon/**"]),
+    bundle_id = "gannon.WatchClawPhone",
+    families = [
+        "iphone",
+        "ipad",
+    ],
+    infoplists = [
+        "WatchClawPhone/Info.plist",
+        "BazelInfo.plist",
+    ],
+    minimum_os_version = "26.0",
+    resources = glob(["WatchClawPhone/Assets/Assets.xcassets/**"]),
+    provisioning_profile = select({
+        "@apple_support//constraints:device": ":watch_claw_phone_device_profile",
+        "//conditions:default": None,
+    }),
+    visibility = ["//visibility:public"],
+    deps = [":WatchClawPhoneAppLib"],
+)
+
+# ─── Xcode project ───────────────────────────────────────────────────────────
+
+xcodeproj(
+    name = "xcodeproj",
+    project_name = "WatchClaw",
+    top_level_targets = [
+        top_level_target(
+            ":WatchClaw",
+            target_environments = ["device", "simulator"],
+        ),
+        top_level_target(
+            ":WatchClawPhone",
+            target_environments = ["device", "simulator"],
+        ),
+    ],
+)

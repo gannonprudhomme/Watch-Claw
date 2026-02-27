@@ -1,0 +1,1 @@
+exports_files(["fix-bindable-availability.patch"])

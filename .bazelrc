@@ -1,0 +1,23 @@
+# Default flags applied to every bazel command (build, test, etc.) so you don't have to pass them manually each time.
+
+# watchOS and iOS deployment targets
+build --watchos_minimum_os=26.0
+build --ios_minimum_os=26.0
+
+# Swift 6 mode
+build --features=swift.enable_v6
+
+# Module cache for faster rebuilds
+build --features=swift.use_global_module_cache
+
+# Disk cache for local builds
+build --disk_cache=~/.cache/bazel-disk-cache
+
+# Test settings
+test --test_output=errors
+test --test_timeout=300
+test --build_tests_only
+test --test_tag_filters=-buildtest
+
+# User-local overrides
+try-import %workspace%/.bazelrc.local

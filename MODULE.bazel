@@ -1,0 +1,54 @@
+module(
+    name = "watch_claw",
+    version = "0.0.0",
+)
+
+# Core Apple/Swift rules
+bazel_dep(name = "rules_swift", version = "3.4.2")
+bazel_dep(name = "rules_apple", version = "4.3.3")
+bazel_dep(name = "apple_support", version = "2.2.0")
+
+# SPM dependency resolution
+bazel_dep(name = "rules_swift_package_manager", version = "1.12.0")
+
+# Xcode project generation
+bazel_dep(name = "rules_xcodeproj", version = "3.6.0")
+
+# Swift SPM deps extension
+swift_deps = use_extension(
+    "@rules_swift_package_manager//:extensions.bzl",
+    "swift_deps",
+)
+swift_deps.from_package(
+    resolved = "//:Package.resolved",
+    swift = "//:Package.swift",
+)
+
+# Patch obsoleted -> deprecated to fix Swift 6.2 compilation on iOS 26+
+# where obsoleted annotations cause errors within the defining module.
+swift_deps.configure_package(
+    name = "swift-perception",
+    patch_args = ["-p1"],
+    patches = ["//bazel-patches/swift-perception:fix-bindable-availability.patch"],
+)
+swift_deps.configure_package(
+    name = "swift-composable-architecture",
+    patch_args = ["-p1"],
+    patches = [
+        "//bazel-patches/swift-composable-architecture:fix-binding-observation.patch",
+        "//bazel-patches/swift-composable-architecture:fix-store-observation.patch",
+        "//bazel-patches/swift-composable-architecture:fix-navigation-observation.patch",
+    ],
+)
+use_repo(
+    swift_deps,
+    "swift_package",
+    "swiftpkg_swift_collections",
+    "swiftpkg_swift_composable_architecture",
+    "swiftpkg_swift_concurrency_extras",
+    "swiftpkg_swift_dependencies",
+    "swiftpkg_swift_identified_collections",
+    "swiftpkg_swift_log",
+    "swiftpkg_swift_navigation",
+    "swiftpkg_xctest_dynamic_overlay",
+)

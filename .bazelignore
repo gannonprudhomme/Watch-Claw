@@ -1,0 +1,2 @@
+# SPM's build directory — contains symlinks that cause infinite loops during Bazel's workspace scan
+.build

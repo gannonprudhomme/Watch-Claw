@@ -1,0 +1,5 @@
+exports_files([
+    "fix-binding-observation.patch",
+    "fix-store-observation.patch",
+    "fix-navigation-observation.patch",
+])

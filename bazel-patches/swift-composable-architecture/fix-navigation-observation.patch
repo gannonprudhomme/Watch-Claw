@@ -1,0 +1,17 @@
+--- a/Sources/ComposableArchitecture/Observation/NavigationStack+Observation.swift
++++ b/Sources/ComposableArchitecture/Observation/NavigationStack+Observation.swift
+@@ -105,10 +105,10 @@
+   }
+ }
+
+-@available(iOS, introduced: 13, obsoleted: 17)
+-@available(macOS, introduced: 10.15, obsoleted: 14)
+-@available(tvOS, introduced: 13, obsoleted: 17)
+-@available(watchOS, introduced: 6, obsoleted: 10)
++@available(iOS, introduced: 13, deprecated: 17)
++@available(macOS, introduced: 10.15, deprecated: 14)
++@available(tvOS, introduced: 13, deprecated: 17)
++@available(watchOS, introduced: 6, deprecated: 10)
+ extension Perception.Bindable {
+   /// Derives a binding to a store focused on ``StackState`` and ``StackAction``.
+   ///
